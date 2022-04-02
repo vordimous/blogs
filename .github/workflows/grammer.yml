@@ -32,11 +32,11 @@ jobs:
         run: sudo apt-get install -y lynx
       - name: Install JSON parser
         run: sudo apt-get install -y jq
-      # - name: Cache dependencies
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-01
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-01
       - name: Install Grammar checker
         run: npm i gramma -g
 
@@ -44,9 +44,8 @@ jobs:
       - uses: actions/checkout@v3
 
       # Action Code
-      - name: Run string
-        run: teststr="This is a test sentence"; echo "${teststr:2:20}";
-      - name: Run Checks       
+      - name: Run Checks
+        continue-on-error: true
         run: |
           doc_url=$(m2j -c README.md | jq -r .README.url);
           temp_doc=$(lynx -force_html -nolist -dump $doc_url);
