@@ -40,7 +40,6 @@ jobs:
       - name: npm i
         run: | 
           npm i gramma -g
-          npm i broken-link-checker -g
 
       # Checkout repo $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
@@ -50,12 +49,15 @@ jobs:
         continue-on-error: true
         run: |
           export doc_url=$(m2j -c README.md | jq -r .README.url);
+          echo "::set-env name=DOC_URL::$doc_url"
           export temp_doc=$(lynx -force_html -nolist -dump $doc_url);
           gramma listen -p "${temp_doc:200:20000}";
 
       - name: Link Checks
         continue-on-error: true
-        run: blc $doc_url -g --filter-level 1
+        uses: filiph/linkcheck@v2.0.15+1
+        with:
+          arguments: $DOC_URL -e
 
 
 

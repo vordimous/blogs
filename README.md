@@ -24,4 +24,4 @@ m2j -c README.md | jq -r .README.url
 
 gramma check -p README.md;
 
-blc <https://wso2.com/community/> -g --filter-level 1
+url=<https://wso2.com/community/>; blc $url -g --filter-level 1
