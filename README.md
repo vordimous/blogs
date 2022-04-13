@@ -18,7 +18,10 @@ gramma listen -p "${temp_doc:200:20000}";
 ## get all links
 
 lynx -force_html -listonly -dump "https://dhaurapathirana.medium.com/writing-a-custom-oauth2-grant-type-in-wso2-identity-server-6ab92881fdaf"
+lynx -force_html -listonly -dump "https://wso2.com/community/"
 
 m2j -c README.md | jq -r .README.url
 
 gramma check -p README.md;
+
+blc <https://wso2.com/community/> -g --filter-level 1

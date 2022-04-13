@@ -37,19 +37,25 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-01
-      - name: Install Grammar checker
-        run: npm i gramma -g
+      - name: npm i
+        run: | 
+          npm i gramma -g
+          npm i broken-link-checker -g
 
       # Checkout repo $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
 
       # Action Code
-      - name: Run Checks
+      - name: Grammar Checks
         continue-on-error: true
         run: |
-          doc_url=$(m2j -c README.md | jq -r .README.url);
-          temp_doc=$(lynx -force_html -nolist -dump $doc_url);
+          export doc_url=$(m2j -c README.md | jq -r .README.url);
+          export temp_doc=$(lynx -force_html -nolist -dump $doc_url);
           gramma listen -p "${temp_doc:200:20000}";
+
+      - name: Link Checks
+        continue-on-error: true
+        run: blc $doc_url -g --filter-level 1
 
 
 
