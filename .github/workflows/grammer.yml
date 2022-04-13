@@ -49,7 +49,7 @@ jobs:
         continue-on-error: true
         run: |
           export doc_url=$(m2j -c README.md | jq -r .README.url);
-          echo "::set-env name=DOC_URL::$doc_url"
+          echo "doc_url=$doc_url" >> $GITHUB_ENV;
           export temp_doc=$(lynx -force_html -nolist -dump $doc_url);
           gramma listen -p "${temp_doc:200:20000}";
 
@@ -57,7 +57,7 @@ jobs:
         continue-on-error: true
         uses: filiph/linkcheck@v2.0.15+1
         with:
-          arguments: $DOC_URL -e
+          arguments: "${{ env.action_state }} -e"
 
 
 
