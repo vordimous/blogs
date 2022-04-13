@@ -48,16 +48,17 @@ jobs:
       - name: Grammar Checks
         continue-on-error: true
         run: |
-          export doc_url=$(m2j -c README.md | jq -r .README.url);
-          echo "doc_url=$doc_url" >> $GITHUB_ENV;
-          export temp_doc=$(lynx -force_html -nolist -dump $doc_url);
+          doc_url=$(m2j -c README.md | jq -r .README.url);
+          echo "check_url=$doc_url";
+          echo "check_url=$doc_url" >> $GITHUB_ENV;
+          temp_doc=$(lynx -force_html -nolist -dump $doc_url);
           gramma listen -p "${temp_doc:200:20000}";
 
       - name: Link Checks
         continue-on-error: true
         uses: filiph/linkcheck@v2.0.15+1
         with:
-          arguments: "${{ env.action_state }} -e"
+          arguments: "${{ env.check_url }} -e"
 
 
 
