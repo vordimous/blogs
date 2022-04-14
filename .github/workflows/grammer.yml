@@ -36,29 +36,36 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-01
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-02
       - name: npm i
         run: | 
           npm i gramma -g
+          npm i markdown-to-json -g
 
       # Checkout repo $GITHUB_WORKSPACE
       - uses: actions/checkout@v3
+      # Action Code
+      - name: Get Document
+        continue-on-error: true
+        run: |
+          doc_url=$(m2j -c README.md | jq -r .README.url);
+          echo "doc_url=$doc_url";
+          echo "doc_url=$doc_url" >> $GITHUB_ENV;
+          echo "${{ env.doc_url }}";
 
       # Action Code
       - name: Grammar Checks
         continue-on-error: true
         run: |
-          doc_url=$(m2j -c README.md | jq -r .README.url);
-          echo "check_url=$doc_url";
-          echo "check_url=$doc_url" >> $GITHUB_ENV;
-          temp_doc=$(lynx -force_html -nolist -dump $doc_url);
-          gramma listen -p "${temp_doc:200:20000}";
+          echo "${{ env.doc_url }}";
+          doc_body=$(lynx -force_html -nolist -dump ${{ env.doc_url }});
+          gramma listen -p "${doc_body:200:20000}";
 
       - name: Link Checks
         continue-on-error: true
         uses: filiph/linkcheck@v2.0.15+1
         with:
-          arguments: "${{ env.check_url }} -e"
+          arguments: "${{ env.doc_url }} -e"
 
 
 
