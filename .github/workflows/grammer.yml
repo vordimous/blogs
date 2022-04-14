@@ -63,9 +63,9 @@ jobs:
 
       - name: Link Checks
         continue-on-error: true
-        uses: filiph/linkcheck@v2.0.15+1
+        uses: filiph/linkcheck@2.0.20
         with:
-          arguments: ${{ env.doc_url }}
+          arguments: '-e ${{ env.doc_url }}'
 
 
 
