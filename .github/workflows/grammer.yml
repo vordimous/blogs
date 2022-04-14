@@ -65,7 +65,7 @@ jobs:
         continue-on-error: true
         uses: filiph/linkcheck@v2.0.15+1
         with:
-          arguments: "${{ env.doc_url }} -e"
+          arguments: ${{ env.doc_url }} -e
 
 
 
