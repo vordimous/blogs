@@ -61,11 +61,17 @@ jobs:
           doc_body=$(lynx -force_html -nolist -dump ${{ env.doc_url }});
           gramma listen -p "${doc_body:200:20000}";
 
-      - name: Link Checks
-        continue-on-error: true
-        uses: filiph/linkcheck@2.0.20
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v1.4.1
         with:
-          arguments: ${{ env.doc_url }} -e
+          # Check all markdown and html files in repo (default)
+          args: -E --exclude-mail --verbose --no-progress ${{ env.doc_url }}
+          # Use json as output format (instead of markdown)
+          # format: json
+          # # Use different output filename
+          # output: /tmp/foo.txt
+          # Fail action on broken links
+          fail: true
 
 
 
