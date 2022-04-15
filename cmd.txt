@@ -20,7 +20,7 @@ m2j -c README.md | jq -r .README.url
 
 gramma check -p README.md;
 
-docker run --init -it -v `pwd`:/input lycheeverse/lychee -E --exclude-mail --verbose --no-progress https://dhaurapathirana.medium.com/writing-a-custom-oauth2-grant-type-in-wso2-identity-server-6ab92881fdaf
+docker run --init -it -v `pwd`:/input lycheeverse/lychee -E --exclude medium\.com\/_.* --exclude-mail --verbose --no-progress https://dhaurapathirana.medium.com/writing-a-custom-oauth2-grant-type-in-wso2-identity-server-6ab92881fdaf
 
 
 export doc_links=$(lynx -dump -listonly "https://wso2.com/community/" | grep -o "http.*" | sort | uniq); echo "${$doc_links}"; docker run --init -it -v `pwd`:/input lycheeverse/lychee -E --exclude-mail --verbose --no-progress $doc_links
