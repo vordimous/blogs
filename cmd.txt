@@ -10,6 +10,10 @@ gramma listen -p "${temp_doc:200:20000}";
 ## get all links
 
 lynx -force_html -listonly -dump "https://dhaurapathirana.medium.com/writing-a-custom-oauth2-grant-type-in-wso2-identity-server-6ab92881fdaf"
+
+lynx -dump -listonly "elinks.htm" | grep -o "http:.*" | grep -E -v "http://compmiscellanea.com|http://www.compmiscellanea.com" | sort | uniq > file.txt
+lynx -dump -listonly "https://wso2.com/community/" | grep -o "http.*" | sort | uniq > links.txt
+doc_links=lynx -dump -listonly "https://wso2.com/community/" | grep -o "http.*" | sort | uniq;
 lynx -force_html -listonly -dump "https://wso2.com/community/"
 
 m2j -c README.md | jq -r .README.url
@@ -17,3 +21,6 @@ m2j -c README.md | jq -r .README.url
 gramma check -p README.md;
 
 docker run --init -it -v `pwd`:/input lycheeverse/lychee -E --exclude-mail --verbose --no-progress https://dhaurapathirana.medium.com/writing-a-custom-oauth2-grant-type-in-wso2-identity-server-6ab92881fdaf
+
+
+export doc_links=$(lynx -dump -listonly "https://wso2.com/community/" | grep -o "http.*" | sort | uniq); echo "${$doc_links}"; docker run --init -it -v `pwd`:/input lycheeverse/lychee -E --exclude-mail --verbose --no-progress $doc_links
