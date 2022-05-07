@@ -23,55 +23,67 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       
-      # Setup
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.0.0
+      # # Setup
+      # - name: Setup Node.js environment
+      #   uses: actions/setup-node@v3.0.0
 
-      # Dependencies
-      - name: Install unix web browser
-        run: sudo apt-get install -y lynx
-      - name: Install JSON parser
-        run: sudo apt-get install -y jq
-      - name: Cache dependencies
-        uses: actions/cache@v2
+      # # Dependencies
+      # - name: Install unix web browser
+      #   run: sudo apt-get install -y lynx
+      # - name: Install JSON parser
+      #   run: sudo apt-get install -y jq
+      # - name: Cache dependencies
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-02
+      # - name: npm i
+      #   run: | 
+      #     npm i gramma -g
+      #     npm i markdown-to-json -g
+
+      # # Checkout repo $GITHUB_WORKSPACE
+      # - uses: actions/checkout@v3
+      # # Action Code
+      # - name: Get Document
+      #   continue-on-error: true
+      #   run: |
+      #     doc_url=$(m2j -c README.md | jq -r .README.url);
+      #     echo "doc_url=$doc_url";
+      #     echo "doc_url=$doc_url" >> $GITHUB_ENV;
+      #     echo "${{ env.doc_url }}";
+
+      # # Action Code
+      # - name: Grammar Checks
+      #   continue-on-error: true
+      #   run: |
+      #     echo "${{ env.doc_url }}";
+      #     doc_body=$(lynx -force_html -nolist -dump ${{ env.doc_url }});
+      #     gramma listen -p "${doc_body:200:20000}";
+
+      # - name: Link Checker
+      #   uses: lycheeverse/lychee-action@v1.4.1
+      #   with:
+      #     # Check all markdown and html files in repo (default)
+      #     args: -E --exclude-mail --verbose --no-progress ${{ env.doc_url }}
+      #     # Use json as output format (instead of markdown)
+      #     # format: json
+      #     # # Use different output filename
+      #     # output: /tmp/foo.txt
+      #     # Fail action on broken links
+      #     fail: true
+      - uses: actions/checkout@v2
+      - id: 'run_worksheet_tests'
+        uses: jroehl/gsheet.action@v1.1.0
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-02
-      - name: npm i
-        run: | 
-          npm i gramma -g
-          npm i markdown-to-json -g
-
-      # Checkout repo $GITHUB_WORKSPACE
-      - uses: actions/checkout@v3
-      # Action Code
-      - name: Get Document
-        continue-on-error: true
-        run: |
-          doc_url=$(m2j -c README.md | jq -r .README.url);
-          echo "doc_url=$doc_url";
-          echo "doc_url=$doc_url" >> $GITHUB_ENV;
-          echo "${{ env.doc_url }}";
-
-      # Action Code
-      - name: Grammar Checks
-        continue-on-error: true
-        run: |
-          echo "${{ env.doc_url }}";
-          doc_body=$(lynx -force_html -nolist -dump ${{ env.doc_url }});
-          gramma listen -p "${doc_body:200:20000}";
-
-      - name: Link Checker
-        uses: lycheeverse/lychee-action@v1.4.1
-        with:
-          # Check all markdown and html files in repo (default)
-          args: -E --exclude-mail --verbose --no-progress ${{ env.doc_url }}
-          # Use json as output format (instead of markdown)
-          # format: json
-          # # Use different output filename
-          # output: /tmp/foo.txt
-          # Fail action on broken links
-          fail: true
+          spreadsheetId: 1628TROU6lYZyHInDDDEBGvocwu6UU4kRhUDzFBjeWzk
+          commands: | # list of commands, specified as a valid JSON string
+            [
+              { "command": "updateData", "args": { "data": [["A1", "A2", "A3"]], "minCol": 1, "worksheetTitle": "RawData" }}
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
 
 
 
